@@ -18,7 +18,7 @@ app.use('*', (c, next) => {
   return next();
 });// Function to read and parse Excel data
 const readExcelData = (): Report[] => {
-    const filePath = path.resolve(__dirname, 'data', 'salaries.xlsx')  // Path to the Excel file
+  const filePath = path.resolve(__dirname, '../data/salaries.xlsx');
     
     // Read the Excel file
     const workbook = xlsx.readFile(filePath)
