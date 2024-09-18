@@ -12,15 +12,11 @@ salary: number
 }
 
 
-app.use('*', async (c, next) => {
-    c.header('Access-Control-Allow-Origin', '*'); // Allow all origins or specify a domain (e.g., 'http://localhost:5173')
-    c.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    if (c.req.method === 'OPTIONS') {
-      return c.text('', 204); // Handle preflight OPTIONS request
-    }
-    await next();
-  });// Function to read and parse Excel data
+app.use('*', (c, next) => {
+  c.res.headers.set('Access-Control-Allow-Origin', '*'); // or your frontend domain
+  c.res.headers.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  return next();
+});// Function to read and parse Excel data
 const readExcelData = (): Report[] => {
     const filePath = path.resolve(__dirname, 'data', 'salaries.xlsx')  // Path to the Excel file
     
