@@ -90,6 +90,7 @@ app.get('/reports', (c) => {
 });
 
 // Route to fetch reports for a specific year
+// Route to fetch reports for a specific year
 app.get('/reports/year', (c) => {
   const year = parseInt(c.req.query('year') || '', 10); // Retrieve and parse the year from query parameters
 
@@ -131,6 +132,7 @@ app.get('/reports/year', (c) => {
     return c.json({ message: 'Failed to process request' }, 500); // Handle server error
   }
 });
+
 
 
 // Start the server
