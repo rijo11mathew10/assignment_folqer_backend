@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
+    "outDir": "./dist",  // Ensure compiled files go to the dist directory
     "module": "commonjs",
     "target": "es6",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "strict": true
   },
-  "include": ["/*.ts", "server.ts"],
+  "include": ["src/**/*.ts"],  // Make sure your TypeScript files are in 'src'
   "exclude": ["node_modules"]
 }
