@@ -90,50 +90,40 @@ app.get('/reports', (c) => {
 });
 
 // Route to fetch reports for a specific year
-// Route to fetch reports for a specific year
-app.get('/reports/year', (c) => {
-  const year = parseInt(c.req.query('year') || '', 10); // Retrieve and parse the year from query parameters
+app.get('/reports/:year', (c) => {
+  const yearParam = c.req.param('year'); // Get the year from the URL parameter
+  const year = parseInt(yearParam, 10);  
+  const data = readExcelData(); // Read data from Excel
 
-  if (isNaN(year)) {
-    return c.json({ message: 'Invalid year parameter' }, 400); // Handle invalid year
+  // Filter the data for the requested year
+  const filteredData = data.filter((row) => row.work_year === year);
+  
+  if (filteredData.length === 0) {
+    return c.json({ message: `No data found for year ${year}` }, 404); // If no data found for the given year
   }
 
-  try {
-    // Read data from the Excel file
-    const data = readExcelData();
+  // Create an object to count the occurrences of each job title
+  const jobTitleCounts: { [jobtitle: string]: number } = {};
 
-    // Filter the data for the requested year
-    const filteredData = data.filter((row) => row.work_year === year);
-
-    if (filteredData.length === 0) {
-      return c.json({ message: `No data found for year ${year}` }, 404); // Handle no data found
-    }
-
-    // Create an object to count occurrences of each job title
-    const jobTitleCounts: { [jobTitle: string]: number } = {};
-
-    // Loop through the filtered data to count occurrences of each job title
-    filteredData.forEach((row) => {
-      if (row.job_title) {
-        jobTitleCounts[row.job_title] = (jobTitleCounts[row.job_title] || 0) + 1;
+  // Loop through the filtered data to count occurrences of each job title
+  filteredData.forEach((row) => {
+    if (row.job_title) {
+      if (!jobTitleCounts[row.job_title]) {
+        jobTitleCounts[row.job_title] = 0;
       }
-    });
+      jobTitleCounts[row.job_title] += 1; // Increment the count for the job title
+    }
+  });
 
-    // Prepare the result as an array of job titles with their counts
-    const result = Object.keys(jobTitleCounts).map((jobTitle) => ({
-      job_title: jobTitle,
-      count: jobTitleCounts[jobTitle],
-    }));
+  // Prepare the result as an array of job titles with their counts
+  const result = Object.keys(jobTitleCounts).map((job_title) => ({
+    job_title, // Job title
+    count: jobTitleCounts[job_title] // Number of times the job title appeared
+  }));
 
-    // Return the result as JSON
-    return c.json(result);
-  } catch (error) {
-    console.error('Error processing /reports/year route:', error);
-    return c.json({ message: 'Failed to process request' }, 500); // Handle server error
-  }
+  // Return the result as JSON
+  return c.json(result);
 });
-
-
 
 // Start the server
 serve(app); 
