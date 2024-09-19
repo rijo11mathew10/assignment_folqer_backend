@@ -11,11 +11,13 @@ interface Report {
 }
 
 // Middleware to handle CORS
-app.use('*', (c, next) => {
-  c.res.headers.set('Access-Control-Allow-Origin', '*'); // or your frontend domain
+app.options('*', (c) => {
+  c.res.headers.set('Access-Control-Allow-Origin', '*');
   c.res.headers.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-  return next();
+  c.res.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+  return c.text('OK', 200);
 });
+
 
 // Function to read and parse Excel data
 const readExcelData = (): Report[] => {
