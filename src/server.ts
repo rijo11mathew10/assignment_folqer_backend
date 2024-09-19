@@ -13,7 +13,7 @@ interface Report {
 }
 
 
-app.use('/api/*', cors())
+app.use('/reports/*', cors());
 app.use(
   '/api2/*',
   cors({
@@ -24,14 +24,17 @@ app.use(
     maxAge: 600,
     credentials: true,
   })
-)
+);
 
-app.all('/api/abc', (c) => {
-  return c.json({ success: true })
-})
+// Test routes for /reports and /api2
+app.all('/reports/abc', (c) => {
+  return c.json({ success: true });
+});
+
 app.all('/api2/abc', (c) => {
-  return c.json({ success: true })
-})
+  return c.json({ success: true });
+});
+
 // Load data from JSON file
 const readJSONData = (): Report[] => {
   const filePath = path.resolve(__dirname, '../data/salaries.json');
