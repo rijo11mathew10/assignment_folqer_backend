@@ -11,6 +11,12 @@ interface Report {
 }
 
 // Middleware to handle CORS
+app.use('*', (c, next) => {
+  c.res.headers.set('Access-Control-Allow-Origin', '*'); // or your frontend domain
+  c.res.headers.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  return next();
+});
+
 app.options('*', (c) => {
   c.res.headers.set('Access-Control-Allow-Origin', '*');
   c.res.headers.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
