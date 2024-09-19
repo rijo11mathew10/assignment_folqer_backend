@@ -13,8 +13,10 @@ interface Report {
 }
 
 
-app.use('/reports/*',
- cors({
+app.use('/reports/*', cors());
+app.use(
+  '/api2/*',
+  cors({
     origin: 'http://example.com',
     allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests'],
     allowMethods: ['POST', 'GET', 'OPTIONS'],
