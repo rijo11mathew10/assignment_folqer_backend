@@ -13,10 +13,8 @@ interface Report {
 }
 
 
-app.use('/reports/*', cors());
-app.use(
-  '/api2/*',
-  cors({
+app.use('/reports/*',
+ cors({
     origin: 'http://example.com',
     allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests'],
     allowMethods: ['POST', 'GET', 'OPTIONS'],
@@ -31,9 +29,6 @@ app.all('/reports/abc', (c) => {
   return c.json({ success: true });
 });
 
-app.all('/api2/abc', (c) => {
-  return c.json({ success: true });
-});
 
 // Load data from JSON file
 const readJSONData = (): Report[] => {
