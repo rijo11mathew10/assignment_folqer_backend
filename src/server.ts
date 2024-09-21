@@ -3,6 +3,8 @@ import { cors } from 'hono/cors';
 import { serve } from '@hono/node-server';
 import path from 'path';
 import fs from 'fs';
+import { zValidator } from '@hono/zod-validator'
+import {z} from 'zod';
 
 const app = new Hono();
 
@@ -13,9 +15,8 @@ interface Report {
 }
 
 
-app.use('/reports/*', cors());
 app.use(
-  '/api2/*',
+  '/*',
   cors({
     origin: 'http://example.com',
     allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests'],
@@ -24,27 +25,14 @@ app.use(
     maxAge: 600,
     credentials: true,
   })
-);
+);  
 
-// Test routes for /reports and /api2
-app.all('/reports/abc', (c) => {
-  return c.json({ success: true });
-});
-
-
-// Load data from JSON file
 const readJSONData = (): Report[] => {
   const filePath = path.resolve(__dirname, '../data/salaries.json');
   const fileContent = fs.readFileSync(filePath, 'utf-8');
   return JSON.parse(fileContent);
 };
 
-// Define a basic route
-app.get('/', (c) => {
-  return c.json({ message: 'Welcome to the Hono API' });
-});
-
-// Route to fetch all reports
 app.get('/reports', (c) => {
   try {
     const data = readJSONData();
@@ -109,6 +97,30 @@ app.get('/reports/:year', (c) => {
   }));
 
   return c.json(result);
+});
+
+
+
+app.post('/ask', async (c) => {
+  const { question } = await c.req.json(); // Get the user's question from the request body
+
+  const response = await fetch(
+    'https://api-f1db6c.stack.tryrelevance.com/latest/studios/bbee51a2-c612-4160-b02e-f8190455f29d/trigger_limited',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: '6578e5ad9080-48ec-9b24-dea6ffd0169e:sk-ZmIzMTFhNzgtMmFiZC00MjJkLWJlMmItOTBmYzk2YTY3ODIy',
+      },
+      body: JSON.stringify({
+        params: { long_text: question }, // Pass the user input as 'long_text'
+        project: '6578e5ad9080-48ec-9b24-dea6ffd0169e',
+      }),
+    }
+  );
+
+  const data = await response.json();
+  return c.json({ result: data.result || 'No response from model' });
 });
 
 serve(app);

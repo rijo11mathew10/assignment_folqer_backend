@@ -4,6 +4,7 @@
     "module": "commonjs",
     "target": "es6",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "strict": true
   },
