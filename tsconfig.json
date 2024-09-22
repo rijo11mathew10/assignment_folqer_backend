@@ -1,13 +1,23 @@
 {
+  "extends": "fastify-tsconfig",
   "compilerOptions": {
-    "outDir": "./dist",  // Ensure compiled files go to the dist directory
-    "module": "commonjs",
-    "target": "es6",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
+    "target": "ESNext",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "strict": true,
     "skipLibCheck": true,
-    "strict": true
+    "types": [
+      "node"
+    ],
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+    "outDir": "./dist",
+    "esModuleInterop": true,
   },
-  "include": ["src/**/*.ts"],  // Make sure your TypeScript files are in 'src'
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "tests",
+  ],
 }
