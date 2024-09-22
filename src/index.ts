@@ -1,10 +1,9 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { serve } from '@hono/node-server';
-import path from 'path';
-import fs from 'fs';
 import { zValidator } from '@hono/zod-validator'
 import {z} from 'zod';
+import { salaries } from './data/salaries.js';
 
 const app = new Hono();
 
@@ -27,15 +26,11 @@ app.use(
 );  
 
 
-const readJSONData = (): Report[] => {
-  const filePath = path.resolve(__dirname, '../data/salaries.json');
-  const fileContent = fs.readFileSync(filePath, 'utf-8');
-  return JSON.parse(fileContent);
-};
+
 
 app.get('/reports', (c) => {
   try {
-    const data = readJSONData();
+    const data = structuredClone(salaries);
 
     const reportSummary: { [key: string]: { totalJobs: number; totalSalary: number } } = {};
 
@@ -72,8 +67,7 @@ app.get('/reports', (c) => {
 app.get('/reports/:year', (c) => {
   const yearParam = c.req.param('year');
   const year = parseInt(yearParam, 10);
-  const data = readJSONData();
-
+  const data = structuredClone(salaries);
   const filteredData = data.filter((row) => row.work_year === year);
   
   if (filteredData.length === 0) {
