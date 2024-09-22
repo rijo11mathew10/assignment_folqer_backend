@@ -18,8 +18,7 @@ interface Report {
 app.use(
   '/*',
   cors({
-    origin: 'http://example.com',
-    allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests'],
+    origin: ['http://localhost:5173', 'https://your-vercel-url.vercel.app'],  
     allowMethods: ['POST', 'GET', 'OPTIONS'],
     exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],
     maxAge: 600,
@@ -100,20 +99,18 @@ app.get('/reports/:year', (c) => {
 });
 
 
-
 app.post('/insights', async (c) => {
-  const { question } = await c.req.json(); // Get the user's question from the request body
-
+  const { question } = await c.req.json(); // Extract the user's question
   const response = await fetch(
     'https://api-f1db6c.stack.tryrelevance.com/latest/studios/bbee51a2-c612-4160-b02e-f8190455f29d/trigger_limited',
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: '6578e5ad9080-48ec-9b24-dea6ffd0169e:sk-ZmIzMTFhNzgtMmFiZC00MjJkLWJlMmItOTBmYzk2YTY3ODIy',
+        Authorization: '6578e5ad9080-48ec-9b24-dea6ffd0169e:sk-ZmIzMTFhNzgtMmFiZC00MjJkLWJlMmItOTBmYzk2YTY3ODIy', // Use your actual key securely here
       },
       body: JSON.stringify({
-        params: { long_text: question }, // Pass the user input as 'long_text'
+        params: { long_text: question }, // Send user's question
         project: '6578e5ad9080-48ec-9b24-dea6ffd0169e',
       }),
     }
@@ -122,6 +119,5 @@ app.post('/insights', async (c) => {
   const data = await response.json();
   return c.json({ result: data.result || 'No response from model' });
 });
-
 serve(app);
 console.log('Hono API is running on http://localhost:3000');
