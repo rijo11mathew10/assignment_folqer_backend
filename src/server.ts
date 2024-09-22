@@ -26,6 +26,7 @@ app.use(
   })
 );  
 
+
 const readJSONData = (): Report[] => {
   const filePath = path.resolve(__dirname, '../data/salaries.json');
   const fileContent = fs.readFileSync(filePath, 'utf-8');
