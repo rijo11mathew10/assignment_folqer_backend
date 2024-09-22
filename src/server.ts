@@ -101,7 +101,7 @@ app.get('/reports/:year', (c) => {
 
 
 
-app.post('/ask', async (c) => {
+app.post('/insights', async (c) => {
   const { question } = await c.req.json(); // Get the user's question from the request body
 
   const response = await fetch(
